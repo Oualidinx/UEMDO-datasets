@@ -169,9 +169,11 @@ public class AlgoUPEMDO {
                 f_ProbabilisticEpisode.add(t_epi);
             }
         }
-        int i = 0, j=0, k=0;
-        while (i < f_ProbabilisticEpisode.size()) {
+        int i = 0, j=0;
+        //System.out.println(f_size_1);
+        while (i < f_size_1.size()) {
             alpha = f_ProbabilisticEpisode.get(i);
+            j=0;
             while (j < f_size_1.size()) {
                 t_events = new ArrayList<>();
                 Collections.addAll(t_events, StrToList(alpha.toString()));
@@ -180,11 +182,12 @@ public class AlgoUPEMDO {
                 t_events = null;
                 this.CandidateProbabilisticEpisodesCount++;
                 t_sup = t_epi.getExpectedSupport();
+
                 if (isInjective(t_epi.getEvents())) {
                     occurrences = DistinctOccurrenceRecognition(alpha, f_size_1.get(j));
-                    //t_epi.setOccurrences(newOccurrences);
+                    t_epi.setOccurrences(occurrences);
                     t_sup = ExpectedSupport(occurrences);
-                    //t_epi.setExpectedSupport();
+                    t_epi.setExpectedSupport(t_sup);
                     if (t_sup >= minsup) {
                         t_epi.setOccurrences(occurrences);
                         t_epi.setExpectedSupport(t_sup);
@@ -199,8 +202,6 @@ public class AlgoUPEMDO {
                 }
                 j++;
             }
-            k = k +1;
-            j = k +1;
             i++;
         }
         this.endExecutionTime = System.currentTimeMillis();
@@ -237,57 +238,57 @@ public class AlgoUPEMDO {
             lineSplited = line.split("\\#");
             timeStamp = Integer.parseInt(lineSplited[0]);
             if (lineSplited.length >=  2) {
-	            if (isComplex) {
-	                String[] _events = lineSplited[1].split(" ");
-	                for (String e : _events) {
-	                    events = new ArrayList<>();
-	                    occ = new ProbabilisticOccurrence();
-	                    if (withProb) {
-	                        events.add(e.split("\\|")[0]);
-	                        prob = Double.parseDouble(e.split("\\|")[1]);
-	                        occ.insertProb(prob);
-	                        occ.addEvent(e.split("\\|")[0]);
-	                    } else {
-	                        //System.out.print("\t event: "+e);
-	                        events.add(e);
-	                        occ.insertProb(1);
-	                        occ.addEvent(e);
-	                    }
-	                    epi = new ProbabilisticEpisode(events);
-	                    occ.insertTimeStamp(timeStamp);
-	
-	                    if (SingleEventProbabilisticEpisode.containsKey(epi.toString())) {
-	                        SingleEventProbabilisticEpisode.get(epi.toString()).add(occ);
-	                    } else {
-	                        SingleEventProbabilisticEpisode.put(epi.toString(), new ArrayList<>());
-	                        SingleEventProbabilisticEpisode.get(epi.toString()).add(occ);
-	                    }
-	                }
-	            } else {
-	                events = new ArrayList<>();
-	                if (withProb) {
-	                    events.add(lineSplited[1].split("\\|")[0]);
-	                    prob = Double.parseDouble(lineSplited[1].split("\\|")[1]);
-	                    occ.insertProb(prob);
-	                    occ.addEvent(lineSplited[1].split("\\|")[0]);
-	                } else {
-	                    events.add(lineSplited[1]);
-	                    occ.insertProb(1);
-	                    occ.addEvent(lineSplited[1]);
-	                }
-	                epi = new ProbabilisticEpisode(events);
-	
-	                occ.insertTimeStamp(timeStamp);
-	                if (SingleEventProbabilisticEpisode.containsKey(epi.toString())) {
-	                    SingleEventProbabilisticEpisode.get(epi.toString()).add(occ);
-	                } else {
-	                    SingleEventProbabilisticEpisode.put(epi.toString(), new ArrayList<>());
-	                    SingleEventProbabilisticEpisode.get(epi.toString()).add(occ);
-	                }
-	
-	            }
+                if (isComplex) {
+                    String[] _events = lineSplited[1].split(" ");
+                    for (String e : _events) {
+                        events = new ArrayList<>();
+                        occ = new ProbabilisticOccurrence();
+                        if (withProb) {
+                            events.add(e.split("\\|")[0]);
+                            prob = Double.parseDouble(e.split("\\|")[1]);
+                            occ.insertProb(prob);
+                            occ.addEvent(e.split("\\|")[0]);
+                        } else {
+                            //System.out.print("\t event: "+e);
+                            events.add(e);
+                            occ.insertProb(1);
+                            occ.addEvent(e);
+                        }
+                        epi = new ProbabilisticEpisode(events);
+                        occ.insertTimeStamp(timeStamp);
+    
+                        if (SingleEventProbabilisticEpisode.containsKey(epi.toString())) {
+                            SingleEventProbabilisticEpisode.get(epi.toString()).add(occ);
+                        } else {
+                            SingleEventProbabilisticEpisode.put(epi.toString(), new ArrayList<>());
+                            SingleEventProbabilisticEpisode.get(epi.toString()).add(occ);
+                        }
+                    }
+                } else {
+                    events = new ArrayList<>();
+                    if (withProb) {
+                        events.add(lineSplited[1].split("\\|")[0]);
+                        prob = Double.parseDouble(lineSplited[1].split("\\|")[1]);
+                        occ.insertProb(prob);
+                        occ.addEvent(lineSplited[1].split("\\|")[0]);
+                    } else {
+                        events.add(lineSplited[1]);
+                        occ.insertProb(1);
+                        occ.addEvent(lineSplited[1]);
+                    }
+                    epi = new ProbabilisticEpisode(events);
+    
+                    occ.insertTimeStamp(timeStamp);
+                    if (SingleEventProbabilisticEpisode.containsKey(epi.toString())) {
+                        SingleEventProbabilisticEpisode.get(epi.toString()).add(occ);
+                    } else {
+                        SingleEventProbabilisticEpisode.put(epi.toString(), new ArrayList<>());
+                        SingleEventProbabilisticEpisode.get(epi.toString()).add(occ);
+                    }
+    
+                }
             }else {
-            	continue;
+                continue;
             }
         }
         reader.close();
@@ -314,19 +315,20 @@ public class AlgoUPEMDO {
         double rule_support = 0;
         ProbabilisticOccurrence occ_1, occ_2;
         do {
-        	occ_1 = alpha_occurrences.get(i);
-        	trouve = false;
-        	k = j;
-        	while ((k < taille_2) && (!trouve)) {
-        		occ_2 = beta_occurrences.get(k);
-        		if ((occ_1.getStart() < occ_2.getStart()) && (occ_1.getEnd() < occ_2.getEnd())) {
-        			rule_support = rule_support + occ_1.getProbability();
-        			i = i + 1;
-        			trouve = true;
-        		}
-        		k = k + 1;
-        	}
-        	j = k;
+            occ_1 = alpha_occurrences.get(i);
+            trouve = false;
+            k = j;
+            while ((k < taille_2) && (!trouve)) {
+                occ_2 = beta_occurrences.get(k);
+                if ((occ_1.getStart() < occ_2.getStart()) && (occ_1.getEnd() < occ_2.getEnd())) {
+                    rule_support = rule_support + occ_1.getProbability()*occ_2.getProbability();
+                    System.out.println(occ_1+", "+occ_2);
+                    i = i + 1;
+                    trouve = true;
+                }
+                k = k + 1;
+            }
+            j = k;
         }while((j < taille_2) && (i < taille_1));
         /*while (i < taille_1) {
             occ_1 = alpha_occurrences.get(i);
@@ -366,8 +368,8 @@ public class AlgoUPEMDO {
             List<ProbabilisticEpisode> FrequentEpisodes,
             double minconf
     ) { 
-    	MemoryLogger.getInstance().reset();
-    	this.startExecutionTime = System.currentTimeMillis();
+        MemoryLogger.getInstance().reset();
+        this.startExecutionTime = System.currentTimeMillis();
         List<String> valid_rules = new ArrayList<>();
         List<ProbabilisticEpisode> P = new ArrayList<>();
         List<ProbabilisticOccurrence> occurrences;
@@ -384,7 +386,7 @@ public class AlgoUPEMDO {
                 t_epi.setSupport(occurrences.size());
                 P.add(t_epi);
             }else {
-            	break;
+                break;
             }
         }
         
@@ -399,43 +401,43 @@ public class AlgoUPEMDO {
             alpha = FrequentEpisodes.get(i);
             j = 0;
             for (ProbabilisticEpisode x:P) {
-            	k = j;
-            	root = null;
-            	beta = x;
-            	stop = false;
-            	while(!stop){
-            		boolean found = false;
-	            	for(ProbabilisticEpisode gamma: FrequentEpisodes) {
-	            		if (gamma.Equals(beta)) {
-	            			beta.setOccurrences(gamma.getOccurrences());
-	            			found = true; 
-	            			break;
-	            		}
-	            	}                
-	            	
-	                if (found){
-	                    rule_support = ProbabilisticEpisodeRuleSupport(alpha, beta);
-	                    conf = ((float) rule_support / (float) alpha.getExpectedSupport());
-	                    if (conf >= minconf) {
-	                        valid_rules.add(alpha + " => " + beta + " #CONF " + conf*100 + " %");
-	                        root = beta;
-	                    }else{
-	                        beta = root;
-	                    }
-	                }else{
-	                    beta = root;   
-	                }
+                k = j;
+                root = null;
+                beta = x;
+                stop = false;
+                while(!stop){
+                    boolean found = false;
+                    for(ProbabilisticEpisode gamma: FrequentEpisodes) {
+                        if (gamma.Equals(beta)) {
+                            beta.setOccurrences(gamma.getOccurrences());
+                            found = true; 
+                            break;
+                        }
+                    }                
+                    
+                    if (found){
+                        rule_support = ProbabilisticEpisodeRuleSupport(alpha, beta);
+                        conf = ((float) rule_support / (float) alpha.getExpectedSupport());
+                        if (conf >= minconf) {
+                            valid_rules.add(alpha + " => " + beta + " #CONF " + conf*100 + " %");
+                            root = beta;
+                        }else{
+                            beta = root;
+                        }
+                    }else{
+                        beta = root;   
+                    }
                     if ((k>=size_P)||(beta == null)) {
-                    	stop=true;
+                        stop=true;
                     }else {
-                    	events = new ArrayList<>();
+                        events = new ArrayList<>();
                         Collections.addAll(events, StrToList(beta.toString()));
                         events.add(P.get(k).getEvent(0));
                         beta=new ProbabilisticEpisode(events);
                         k = k + 1;
                     }                    
                 }
-            	j = j + 1;
+                j = j + 1;
             }
             i = i + 1;
         }
@@ -461,11 +463,11 @@ public class AlgoUPEMDO {
         int i = 0, j=0;
         ProbabilisticEpisode alpha, beta;
         while (i < ProbabilisticFrequentEpisodes.size()) {
-        	alpha = ProbabilisticFrequentEpisodes.get(i);
-        	j=0;
-        	while (j < ProbabilisticFrequentEpisodes.size()) {
-            	beta = ProbabilisticFrequentEpisodes.get(j);
-        		rule_support = ProbabilisticEpisodeRuleSupport(alpha, beta);
+            alpha = ProbabilisticFrequentEpisodes.get(i);
+            j=0;
+            while (j < ProbabilisticFrequentEpisodes.size()) {
+                beta = ProbabilisticFrequentEpisodes.get(j);
+                rule_support = ProbabilisticEpisodeRuleSupport(alpha, beta);
                 conf = ((float) rule_support / (float) alpha.getExpectedSupport());
                 if (conf >= minconf) {
                     valid_rules.add(alpha.toString() + " => " + beta.toString()+ " #CONF " + conf*100 + " %");
@@ -473,8 +475,8 @@ public class AlgoUPEMDO {
                 j++;
                 beta = null;
             }
-        	i++;
-        	alpha = null;
+            i++;
+            alpha = null;
         }
         this.endExecutionTime = System.currentTimeMillis();
         MemoryLogger.getInstance().checkMemory();
@@ -519,20 +521,20 @@ public class AlgoUPEMDO {
         int i = 0, index = -1;
         //System.out.println("From inside the function=> alpha="+alpha);
         while((i < size_F) && !stop) {
-        	//System.out.println("From inside the function=> beta="+FrequentProbabilisticEpisodes.get(i));
-        	beta = ProbabilisticFrequentEpisodes.get(i);
-        	founded = beta.Equals(alpha);
-        	if (founded) {
-        		stop = true;
-        		index = i;
-        	}
-        	i = i + 1;	
+            //System.out.println("From inside the function=> beta="+FrequentProbabilisticEpisodes.get(i));
+            beta = ProbabilisticFrequentEpisodes.get(i);
+            founded = beta.Equals(alpha);
+            if (founded) {
+                stop = true;
+                index = i;
+            }
+            i = i + 1;  
         }
         return index;
     }
 
     public void setFrequentProbabilisticEpisodes(List<ProbabilisticEpisode> frequentProbabilisticEpisodes) {
-    	ProbabilisticFrequentEpisodes = frequentProbabilisticEpisodes;
+        ProbabilisticFrequentEpisodes = frequentProbabilisticEpisodes;
     }
 
     public List<String> getValidRules() {
